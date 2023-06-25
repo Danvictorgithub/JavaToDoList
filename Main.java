@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ToDoList {
-    ArrayList<String> TodoList = new ArrayList<>(List.of("Sleep", "Eat", "Code", "Debug", "Repeat"));
+    ArrayList<String> TodoList = new ArrayList<>(List.of("Memes"));
     boolean toggle = true;
     JFrame frame;
     JPanel topPanel;
@@ -68,6 +68,10 @@ class ToDoList {
                         }
                             JButton delTodo = new JButton("Delete");
                             delTodo.setBackground(Color.WHITE);
+                            delTodo.addActionListener( e-> {
+                                TodoList.remove(TodoText);
+                                loadTodosFromList();
+                            });
                             JLabel textTodo = new JLabel(TodoText);
                             textTodo.setBorder(new EmptyBorder(0, 20, 0, 0));
                         // componentGroup.add(delTodo);
@@ -77,6 +81,14 @@ class ToDoList {
                      todoInstance.add(textTodo,BorderLayout.CENTER);
         this.toggle = (toggle == true) ? false : true;
         return todoInstance;
+   }
+   protected void AddToList() {
+    if (createTodoFormField.getText().length()!= 0 && TodoList.size() < 5) {
+        TodoList.add(createTodoFormField.getText());
+        System.out.println(createTodoFormField.getText());
+        loadTodosFromList();
+        createTodoFormField.setText("");
+    }
    }
     protected void guiInit() {
      //Frame[BorderLayout] [Default]
@@ -108,6 +120,9 @@ class ToDoList {
                 createTodoFormText = new JLabel("Add Task: ");
                 createTodoFormField = new JTextField(20);
                 createTodoFormSubmit = new JButton("+");
+                createTodoFormSubmit.addActionListener(e -> {
+                    AddToList();
+                });
                 createTodoFormSubmit.setBackground(themeColor);
             createTodoForm.add(createTodoFormText);
             createTodoForm.add(createTodoFormField);
@@ -123,12 +138,18 @@ class ToDoList {
             frame.getContentPane().add(todoBody,BorderLayout.CENTER);
             frame.getContentPane().add(topPanel,BorderLayout.NORTH);
     }
+    protected void loadTodosFromList(){
+        todoInstances.removeAll();
+        for (String todoContent: TodoList) {
+                todoInstances.add(todoInstanceMaker(todoContent));
+            }
+        frame.repaint();
+        frame.revalidate();
+    }
 
     public void go() {
         guiInit();
-            for (String todoContent: TodoList) {
-                todoInstances.add(todoInstanceMaker(todoContent));
-            }
+        loadTodosFromList();
         frame.repaint();
         frame.revalidate();
     }
